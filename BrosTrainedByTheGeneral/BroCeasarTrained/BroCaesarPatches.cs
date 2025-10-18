@@ -1,7 +1,6 @@
 using HarmonyLib;
 using RocketLib;
 using UnityEngine;
-using static Text3D;
 
 namespace BroCeasarTrained
 {
