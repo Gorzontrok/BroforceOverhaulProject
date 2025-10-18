@@ -63,7 +63,7 @@ namespace BroffyTrained
             Sound sound = t.GetFieldValue<Sound>("sound");
 
             DamageType damageType = t.GetFieldValue<bool>("dashingMelee") ? DamageType.Melee : DamageType.SilencedBullet;
-            if (Mod.IsOnAnimal(__instance))
+            if (Mod.IsOnAnimal(__instance) || __instance.actionState == ActionState.ClimbingLadder)
                 damageType = DamageType.Knifed;
             Map.DamageDoodads(3, DamageType.Knifed, __instance.X + (float)(__instance.Direction * 4), __instance.Y, 0f, 0f, 6f, __instance.playerNum, out bool flag, __instance);
             t.CallMethod("KickDoors", 24f);
@@ -103,7 +103,7 @@ namespace BroffyTrained
                 ))
             {
                 // Change the hit sound if Broffy is kicking an opponent
-                if (damageType == DamageType.Melee)
+                if (damageType == DamageType.Melee || (trained != null && trained.doingFlyingKick))
                     sound.PlaySoundEffectAt(kickClips, 1f, __instance.transform.position);
                 else
                     sound.PlaySoundEffectAt(__instance.soundHolder.meleeHitSound, 1f, __instance.transform.position);
@@ -142,7 +142,7 @@ namespace BroffyTrained
                 frameCol = TSettings.flyingKick.flyingKickCol + Mathf.Clamp(__instance.frame, 0, TSettings.flyingKick.flyingKickMaxFrame);
                 frameRow = TSettings.flyingKick.flyingKickRow;
             }
-            else if (__instance.GetBool("standingMelee") && Mod.IsOnAnimal(__instance))
+            else if ((__instance.GetBool("standingMelee") && Mod.IsOnAnimal(__instance)) || __instance.actionState == ActionState.ClimbingLadder)
             {
                 frameRow = 1; // knife row
             }
@@ -157,7 +157,7 @@ namespace BroffyTrained
             else if (dashingMelee)
             {
                 // If player is running do Flying Kick, else normal kick
-                if (__instance.dashing && !comp.doingFlyingKick)
+                if (__instance.dashing && !comp.doingFlyingKick && __instance.actionState != ActionState.ClimbingLadder)
                 {
                     frameCol = TSettings.flyingKick.flyingKickCol + Mathf.Clamp(__instance.frame, 0, TSettings.flyingKick.flyingKickMaxFrame);
                     frameRow = TSettings.flyingKick.flyingKickRow;
